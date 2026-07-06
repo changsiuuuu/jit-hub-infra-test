@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: jit-hub-project
+  namespace: argocd
+spec:
+  description: "하이브리드 DR 아키텍처를 위한 멀티 클러스터 프로젝트"
+  # 배포를 허용할 소스 Git 저장소 (팀장 메인/개인 platform repo)
+  sourceRepos:
+    - "https://github.com/hacksungboo/jit-hub-infra.git"
+    - "https://github.com/*"
+  # 배포를 허용할 대상 클러스터 및 네임스페이스
+  destinations:
+    - name: eks-a
+      namespace: jit-hub
+    - name: eks-b
+      namespace: jit-hub
+    - name: onprem
+      namespace: jit-hub
+    - name: '*'
+      namespace: monitoring
+    - name: '*'
+      namespace: kube-system
+    - name: '*'
+      namespace: argocd
+  # 프로젝트 내에서 생성할 수 있는 네임스페이스 리소스 제한 해제
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

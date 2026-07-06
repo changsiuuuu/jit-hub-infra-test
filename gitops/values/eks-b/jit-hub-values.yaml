@@ -1,0 +1,15 @@
+# gitops/values/eks-b/jit-hub-values.yaml
+jit-hub-app:
+  # 평시 Cold Standby이므로 replicaCount를 0으로 설정
+  # JIT 복구 시나리오(노드그룹 스케일업) 동작 후 파드가 스케줄링됨
+  replicaCount: 0 
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  env:
+    ENVIRONMENT: eks-b
+    DB_HOST: "onprem-postgres-service-ip" # 온프레 메인 DB 연동

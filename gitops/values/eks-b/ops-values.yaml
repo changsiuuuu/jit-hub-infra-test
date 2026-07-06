@@ -1,0 +1,17 @@
+# gitops/values/eks-b/ops-values.yaml
+keda:
+  enabled: true
+  minReplicaCount: 1 # 기동 시 즉시 활성화
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-k8s.monitoring.svc.cluster.local:9090
+        metricName: http_requests_total
+        query: sum(rate(http_requests_total[2m]))
+        threshold: '50'
+karpenter:
+  enabled: true
+  nodePoolName: eks-b-nodepool
+customScheduler:
+  enabled: true

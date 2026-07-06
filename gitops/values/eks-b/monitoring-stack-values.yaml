@@ -1,0 +1,19 @@
+# gitops/values/eks-b/monitoring-stack-values.yaml
+prometheus:                                                                                                                        
+  enabled: true                                                                                                                    
+  prometheusSpec:                                                                                                                  
+    externalLabels:                                                                                                                
+      cluster: eks-b                                                                                                               
+    remoteWrite:                                                                                                                   
+      - url: "https://prometheus-ingest.jit-hub-domain.com/api/v1/write"                                                           
+                                                                                                                                    
+grafana:                                                                                                                           
+  enabled: false                                                                                                                   
+                                                                                                                                    
+promtail:                                                                                                                          
+  enabled: true                                                                                                                    
+  config:                                                                                                                          
+    clients:                                                                                                                       
+      - url: "https://loki-ingest.jit-hub-domain.com/loki/api/v1/push"                                                             
+        external_labels:                                                                                                           
+          cluster: eks-b            

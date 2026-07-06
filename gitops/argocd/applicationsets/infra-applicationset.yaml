@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jit-hub-infra-appset
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          # 1. 대상 클러스터 제너레이터 (environment 레이블 기반)
+          - clusters:
+              selector:
+                matchExpressions:
+                  - key: environment
+                    operator: In
+                    values:
+                      - eks-a
+                      - eks-b
+                      - onprem
+          # 2. 배포할 인프라 차트 제너레이터
+          - list:
+              elements:
+                - chart: cloudflared
+                  namespace: kube-system
+                - chart: monitoring-stack
+                  namespace: monitoring
+                - chart: ops
+                  namespace: kube-system
+  template:
+    metadata:
+      name: '{{name}}-{{chart}}'
+    spec:
+      project: jit-hub-project
+      source:
+        repoURL: 'https://github.com/hacksungboo/jit-hub-infra'
+        targetRevision: HEAD
+        # charts/cloudflared, charts/monitoring-stack, charts/ops에 각각 대응
+        path: charts/{{chart}}
+        helm:
+          valueFiles:
+            # 1. 각 클러스터 환경 내부의 차트별 values 파일 머지 (예: gitops/values/eks-a/cloudflared-values.yaml)
+            - ../../gitops/values/{{metadata.labels.environment}}/{{chart}}-values.yaml
+      destination:
+        server: '{{server}}'
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

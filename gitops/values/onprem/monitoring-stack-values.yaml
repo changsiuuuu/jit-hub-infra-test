@@ -1,0 +1,20 @@
+# gitops/values/onprem/monitoring-stack-values.yaml
+prometheus:                                                                                                                        
+      enabled: true                                                                                                                    
+      prometheusSpec:                                                                                                                  
+        externalLabels:                                                                                                                
+          cluster: onprem
+        remoteWrite:
+          # 온프레미스 내부망 IP를 사용해 다이렉트로 전송
+          - url: "http://<내부아이피>:9090/api/v1/write"
+grafana:
+      enabled: false # 외부에 Grafana가 단독 가동 중이므로 비활성
+  
+promtail:
+      enabled: true
+      config:
+        clients:
+          # 온프레미스 내부망 IP를 사용해 다이렉트로 로그 전송
+          - url: "http://<내부아이피>:3100/loki/api/v1/push"
+            external_labels:
+              cluster: onprem

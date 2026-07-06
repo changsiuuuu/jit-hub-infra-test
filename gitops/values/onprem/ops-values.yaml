@@ -1,0 +1,7 @@
+# gitops/values/onprem/ops-values.yaml
+keda:
+  enabled: false # 온프레미스 자원 최적화를 위해 KEDA 비활성화
+karpenter:
+  enabled: false # EKS 전용이므로 비활성화
+customScheduler:
+  enabled: false # 고효율 노드 배치용 Custom GreenOps Scheduler 비활성화

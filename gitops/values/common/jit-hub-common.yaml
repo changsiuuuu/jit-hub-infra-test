@@ -1,0 +1,16 @@
+# gitops/values/common/jit-hub-common.yaml
+global:
+  imageRegistry: harbor.domain.local # 온프레미스 Harbor 주소
+  projectName: jit-hub
+
+jit-hub-app:
+  image:
+    repository: harbor.domain.local/jit-hub/app
+    tag: latest # CI 파이프라인에서 이미지 갱신 시 업데이트 예정
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000 # FastAPI 컨테이너 포트
+  nginx:
+    port: 80

@@ -1,0 +1,14 @@
+# gitops/values/eks-a/jit-hub-values.yaml
+jit-hub-app:
+  replicaCount: 3
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  # active 전용 환경 설정
+  env:
+    ENVIRONMENT: eks-a
+    DB_HOST: "onprem-postgres-service-ip" # 온프레 메인 DB 연동

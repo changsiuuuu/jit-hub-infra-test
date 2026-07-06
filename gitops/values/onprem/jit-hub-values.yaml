@@ -1,0 +1,13 @@
+# gitops/values/onprem/jit-hub-values.yaml
+jit-hub-app:
+  replicaCount: 1 # 최소 standby 실행
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    ENVIRONMENT: onprem
+    DB_HOST: "onprem-postgres-vm-ip" # 온프레미스 별도 DB 노드의 사설 IP 연동 
