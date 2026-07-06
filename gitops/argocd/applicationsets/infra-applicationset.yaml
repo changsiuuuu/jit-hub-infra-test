@@ -33,7 +33,7 @@ spec:
       project: jit-hub-project
       source:
         repoURL: 'https://github.com/changsiuuuu/jit-hub-infra-test.git'
-        targetRevision: HEAD
+        targetRevision: 'feature/gitops-structure-init'
         # charts/cloudflared, charts/monitoring-stack, charts/ops에 각각 대응
         path: charts/{{chart}}
         helm:
