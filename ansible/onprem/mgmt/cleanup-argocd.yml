@@ -1,0 +1,45 @@
+---
+- name: Cleaning up ArgoCD and GitOps Resources
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # 경로 변수 설정 (플레이북 위치 기준 상대 경로 계산)
+    gitops_dir: "{{ playbook_dir }}/../../../gitops"
+
+  tasks:
+    - name: 1. 패치 전 Application 파이널라이저(Finalizers) 제거 (삭제 멈춤 방지)
+      ansible.builtin.shell: |
+        kubectl get application -n argocd -o jsonpath='{.items[*].metadata.name}' | xargs -I {} kubectl patch application {} -n argocd --type merge -p '{"metadata":{"finalizers":null}}'
+      register: patch_result
+      failed_when: false
+      changed_when: "'patched' in patch_result.stdout"
+
+    - name: 2. ArgoCD 리소스 (ApplicationSets, Applications, AppProjects) 삭제
+      ansible.builtin.shell: |
+        kubectl delete applicationsets --all -n argocd --timeout=30s || true
+        kubectl delete applications --all -n argocd --timeout=30s || true
+        kubectl delete appprojects --all -n argocd --timeout=30s || true
+      failed_when: false
+
+    - name: 3. ArgoCD 네임스페이스 삭제
+      ansible.builtin.shell: |
+        kubectl delete ns argocd --timeout=120s || true
+      failed_when: false
+
+    - name: 4. ArgoCD CRD 일괄 삭제
+      ansible.builtin.shell: |
+        kubectl delete crd $(kubectl get crd | grep argoproj.io | awk '{print $1}') || true
+      failed_when: false
+
+    - name: 5. 로컬 GitOps 매니페스트 파일 원복 (git restore)
+      ansible.builtin.shell: |
+        git restore {{ gitops_dir }}/argocd/applicationsets/
+      register: git_result
+      failed_when: false
+      changed_when: git_result.rc == 0
+
+    - name: 6. 정리 완료 메시지 출력
+      ansible.builtin.debug:
+        msg: "========================================================== ArgoCD 리소스, 네임스페이스 및 로컬 파일 원복이 완료되었습니다! =========================================================="

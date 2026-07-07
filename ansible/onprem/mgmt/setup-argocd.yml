@@ -1,0 +1,102 @@
+---
+- name: Bootstrapping ArgoCD on Management Node
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # 깃허브 원본 저장소 및 브랜치 기본값 (실행 시 --extra-vars로 오버라이드 가능)
+    fork_repo_url: "https://github.com/hacksungboo/jit-hub-infra"
+    target_branch: "HEAD"
+    k8s_node_ip: "172.16.8.10"
+    
+    # 경로 변수 설정 (플레이북 위치 기준 상대 경로 계산)
+    gitops_dir: "{{ playbook_dir }}/../../../gitops"
+
+  tasks:
+    - name: 1. argocd 네임스페이스 생성 (멱등성 보장)
+      ansible.builtin.shell: |
+        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+      register: ns_create_result
+      changed_when: "'created' in ns_create_result.stdout"
+
+    - name: 2. ArgoCD 공식 매니페스트 설치 (Server-side Apply 사용)
+      ansible.builtin.shell: |
+        kubectl apply --server-side --force-conflicts -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      register: install_result
+      changed_when: "'serverside-applied' in install_result.stdout or 'configured' in install_result.stdout"
+
+    - name: 3. ArgoCD Server 서비스를 NodePort 타입으로 전환
+      ansible.builtin.shell: |
+        kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
+      register: patch_result
+      changed_when: "'patched' in patch_result.stdout"
+
+    - name: 4. ArgoCD 서버가 준비될 때까지 대기 (최대 1분)
+      ansible.builtin.shell: |
+        kubectl rollout status deployment/argocd-server -n argocd --timeout=60s
+      changed_when: false
+
+    - name: 5. 초기 관리자(admin) 비밀번호 조회
+      ansible.builtin.shell: |
+        kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+      register: admin_password_raw
+      changed_when: false
+
+    - name: 6. 프로젝트(AppProject) 설정 적용
+      ansible.builtin.shell: |
+        kubectl apply -f {{ gitops_dir }}/argocd/projects/jit-hub-project.yaml
+      register: project_result
+      changed_when: "'created' in project_result.stdout or 'configured' in project_result.stdout"
+
+    - name: 7. 온프레미스 클러스터(Secret) 정보 적용
+      ansible.builtin.shell: |
+        kubectl apply -f {{ gitops_dir }}/argocd/clusters/onprem-cluster.yaml
+      register: cluster_result
+      changed_when: "'created' in cluster_result.stdout or 'configured' in cluster_result.stdout"
+
+    - name: 8. ApplicationSet의 repoURL을 포크 주소로 자동 치환
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: "repoURL: '.*'"
+        replace: "repoURL: '{{ fork_repo_url }}'"
+      loop:
+        - "{{ gitops_dir }}/argocd/applicationsets/app-applicationset.yaml"
+        - "{{ gitops_dir }}/argocd/applicationsets/infra-applicationset.yaml"
+
+    - name: 9. ApplicationSet의 targetRevision을 작업 브랜치명으로 자동 치환
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: "targetRevision: .*"
+        replace: "targetRevision: {{ target_branch }}"
+      loop:
+        - "{{ gitops_dir }}/argocd/applicationsets/app-applicationset.yaml"
+        - "{{ gitops_dir }}/argocd/applicationsets/infra-applicationset.yaml"
+
+    - name: 10. 마스터 및 인프라 ApplicationSet 배포 적용
+      ansible.builtin.shell: |
+        kubectl apply -f {{ gitops_dir }}/argocd/applicationsets/{{ item }}
+      loop:
+        - app-applicationset.yaml
+        - infra-applicationset.yaml
+      register: appset_result
+      changed_when: "'created' in appset_result.stdout or 'configured' in appset_result.stdout"
+
+    - name: 11. ArgoCD Server HTTPS NodePort 조회
+      ansible.builtin.shell: |
+        kubectl -n argocd get svc argocd-server -o jsonpath="{.spec.ports[?(@.name=='https')].nodePort}"
+      register: nodeport_raw
+      changed_when: false
+
+    - name: 12. 조회된 초기 정보 출력
+      ansible.builtin.debug:
+        msg:
+          - "=========================================================="
+          - " ArgoCD가 성공적으로 설치 및 초기 설정되었습니다! "
+          - "=========================================================="
+          - " 접속 주소 (Ctrl + 클릭하여 브라우저에서 바로 열기):"
+          - "   https://{{ k8s_node_ip }}:{{ nodeport_raw.stdout }}"
+          - ""
+          - " 로그인 ID: admin"
+          - " 비밀번호: {{ admin_password_raw.stdout }}"
+          - "=========================================================="
