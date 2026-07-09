@@ -1,5 +1,11 @@
 # Terraform 가이드
 
+### 요구사항
+
+terraform/onprem/01-onprem-platform
+terraform/onprem/02-onprem-workloads 
+테라폼 코드를  미리 실행해주세요 
+
 ### 설정파일 추가 (tailscale_auth_key)
 ```
 # 경로
