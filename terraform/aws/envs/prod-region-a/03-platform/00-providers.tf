@@ -60,3 +60,10 @@ data "terraform_remote_state" "eks" {
   }
 
 }
+
+# 온프레미스(VMware k8s) 클러스터 조작용 프로바이더 별칭 정의
+provider "kubernetes" {
+  alias          = "onprem"
+  config_path    = "~/.kube/config"
+  config_context = "kubernetes-admin@kubernetes"
+}
