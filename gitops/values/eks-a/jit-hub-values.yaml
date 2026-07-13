@@ -6,31 +6,31 @@ ingressRule:
   host: "leechs.shop" # 필요시 eks-a 전용 도메인으로 변경 가능
 
 gateway:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: "changsiuuuu/jit-hub-gateway"
     tag: "latest"
 
 auth:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: "changsiuuuu/auth-service"
     tag: "latest"
 
 weather:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: "changsiuuuu/weather-service"
     tag: "latest"
 
 traffic:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: "changsiuuuu/traffic-service"
     tag: "latest"
 
 tourist:
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: "changsiuuuu/tourist-service"
     tag: "latest"
