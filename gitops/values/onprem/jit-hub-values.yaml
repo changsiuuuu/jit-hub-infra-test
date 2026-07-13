@@ -11,26 +11,29 @@ ingress:
 # 2. On-Prem 환경에서는 리소스를 절약하기 위해 최소 단위(Standby)로 실행
 gateway:
   replicaCount: 1
+  image:
+    repository: "changsiuuuu/jit-hub-gateway"
+    tag: "latest"
 
 # 3. 실제 빌드된 이미지 리포지토리를 연동 (GitHub Actions에서 빌드한 주소)
 auth:
   image:
-    repository: "your-registry/auth-service"
+    repository: "changsiuuuu/auth-service"
     tag: "latest"
 
 weather:
   image:
-    repository: "your-registry/weather-service"
+    repository: "changsiuuuu/weather-service"
     tag: "latest"
 
 traffic:
   image:
-    repository: "your-registry/traffic-service"
+    repository: "changsiuuuu/traffic-service"
     tag: "latest"
 
 tourist:
   image:
-    repository: "your-registry/tourist-service"
+    repository: "changsiuuuu/tourist-service"
     tag: "latest"
 
 # 기존에 있던 DB_HOST 등의 단일 앱 구조 설정은 Helm 기반 마이크로서비스로 전환됨에 따라 제거되었습니다.

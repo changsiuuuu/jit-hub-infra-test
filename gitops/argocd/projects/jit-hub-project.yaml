@@ -8,6 +8,8 @@ spec:
   # 배포를 허용할 소스 Git 저장소 (팀장 메인/개인 platform repo)
   sourceRepos:
     - "https://github.com/hacksungboo/jit-hub-infra.git"
+    - "https://github.com/changsiuuuu/jit-hub-infra-test"
+    - "https://github.com/changsiuuuu/jit-hub-infra-test.git"
     - "https://github.com/*"
   # 배포를 허용할 대상 클러스터 및 네임스페이스
   destinations:
