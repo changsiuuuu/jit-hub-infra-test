@@ -1,1 +1,1 @@
-# Default values for subchart overridden by main chart
+# 상위(메인) 차트의 설정값에 의해 덮어씌워지는 서브차트용 기본 설정 파일입니다.
