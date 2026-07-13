@@ -1,13 +1,36 @@
 # gitops/values/onprem/jit-hub-values.yaml
-jit-hub-app:
-  replicaCount: 1 # 최소 standby 실행
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  env:
-    ENVIRONMENT: onprem
-    DB_HOST: "onprem-postgres-vm-ip" # 온프레미스 별도 DB 노드의 사설 IP 연동 
+# 온프레미스 환경을 위한 jit-hub-app values 덮어쓰기 설정
+
+# 1. Ingress 활성화 및 온프레미스용 도메인 매핑
+# (테라폼으로 구성한 Cloudflare Tunnel -> Nginx Ingress Controller 트래픽 수신용)
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "app.your-onprem-domain.com" # 실제 운영할 도메인으로 변경하세요
+
+# 2. On-Prem 환경에서는 리소스를 절약하기 위해 최소 단위(Standby)로 실행
+gateway:
+  replicaCount: 1
+
+# 3. 실제 빌드된 이미지 리포지토리를 연동 (GitHub Actions에서 빌드한 주소)
+auth:
+  image:
+    repository: "your-registry/auth-service"
+    tag: "latest"
+
+weather:
+  image:
+    repository: "your-registry/weather-service"
+    tag: "latest"
+
+traffic:
+  image:
+    repository: "your-registry/traffic-service"
+    tag: "latest"
+
+tourist:
+  image:
+    repository: "your-registry/tourist-service"
+    tag: "latest"
+
+# 기존에 있던 DB_HOST 등의 단일 앱 구조 설정은 Helm 기반 마이크로서비스로 전환됨에 따라 제거되었습니다.

@@ -1,0 +1,41 @@
+ingress:
+  enabled: false
+  className: "nginx"
+  host: "app.local"
+
+gateway:
+  replicaCount: 1
+  image:
+    repository: "nginx"
+    tag: "alpine"
+  service:
+    type: ClusterIP
+    port: 8000
+
+auth:
+  image:
+    repository: "your-repo/auth-service"
+    tag: "latest"
+  service:
+    port: 8001
+
+weather:
+  image:
+    repository: "your-repo/weather-service"
+    tag: "latest"
+  service:
+    port: 8002
+
+traffic:
+  image:
+    repository: "your-repo/traffic-service"
+    tag: "latest"
+  service:
+    port: 8003
+
+tourist:
+  image:
+    repository: "your-repo/tourist-service"
+    tag: "latest"
+  service:
+    port: 8004
