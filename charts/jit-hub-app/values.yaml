@@ -1,7 +1,9 @@
 auth:
   db:
-    image: postgres:13
-    password: password
+    image: postgres:15-alpine
+    name: auth_db
+    password: postgres
+    user: postgres
   enabled: true
   image:
     repository: changsiuuuu/auth-service
@@ -22,8 +24,10 @@ ingressRule:
   namespace: jit-hub
 tourist:
   db:
-    image: postgres:13
-    password: password
+    image: postgres:15-alpine
+    name: tourist_db
+    password: postgres
+    user: postgres
   enabled: true
   image:
     repository: changsiuuuu/tourist-service
@@ -33,8 +37,10 @@ tourist:
     port: 8000
 traffic:
   db:
-    image: postgres:13
-    password: password
+    image: postgres:15-alpine
+    name: traffic_db
+    password: postgres
+    user: postgres
   enabled: true
   image:
     repository: changsiuuuu/traffic-service
@@ -44,8 +50,10 @@ traffic:
     port: 8000
 weather:
   db:
-    image: postgres:13
-    password: password
+    image: postgres:15-alpine
+    name: weather_db
+    password: postgres
+    user: postgres
   enabled: true
   image:
     repository: changsiuuuu/weather-service

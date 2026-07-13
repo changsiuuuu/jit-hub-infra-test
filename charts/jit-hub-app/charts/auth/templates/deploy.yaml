@@ -18,5 +18,5 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
         env:
-        - name: DATABASE_URL
-          value: "postgresql://postgres:{{ .Values.db.password }}@auth-db:5432/postgres"
+        - name: JITHUB_DATABASE_URL
+          value: "postgresql://{{ .Values.db.user }}:{{ .Values.db.password }}@auth-db:5432/{{ .Values.db.name }}"
