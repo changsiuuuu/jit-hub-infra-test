@@ -4,7 +4,7 @@ auth:
     password: password
   enabled: true
   image:
-    repository: changsiuuuu/jit-hub-auth
+    repository: changsiuuuu/auth-service
     tag: latest
   replicaCount: 1
   service:
@@ -26,7 +26,7 @@ tourist:
     password: password
   enabled: true
   image:
-    repository: changsiuuuu/jit-hub-tourist
+    repository: changsiuuuu/tourist-service
     tag: latest
   replicaCount: 1
   service:
@@ -37,7 +37,7 @@ traffic:
     password: password
   enabled: true
   image:
-    repository: changsiuuuu/jit-hub-traffic
+    repository: changsiuuuu/traffic-service
     tag: latest
   replicaCount: 1
   service:
@@ -48,7 +48,7 @@ weather:
     password: password
   enabled: true
   image:
-    repository: changsiuuuu/jit-hub-weather
+    repository: changsiuuuu/weather-service
     tag: latest
   replicaCount: 1
   service:

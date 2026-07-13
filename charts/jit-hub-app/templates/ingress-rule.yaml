@@ -13,6 +13,6 @@ spec:
         pathType: Prefix
         backend: 
           service:
-            name: svc-gateway
+            name: gateway-service
             port:
               number: {{ .Values.gateway.service.port }}

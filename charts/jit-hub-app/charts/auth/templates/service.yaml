@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-auth
+  name: auth-service
 spec:
   type: ClusterIP
   ports:

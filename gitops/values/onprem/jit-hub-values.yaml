@@ -14,23 +14,23 @@ gateway:
 auth:
   replicaCount: 1
   image:
-    repository: "changsiuuuu/jit-hub-auth"
+    repository: "changsiuuuu/auth-service"
     tag: "latest"
 
 weather:
   replicaCount: 1
   image:
-    repository: "changsiuuuu/jit-hub-weather"
+    repository: "changsiuuuu/weather-service"
     tag: "latest"
 
 traffic:
   replicaCount: 1
   image:
-    repository: "changsiuuuu/jit-hub-traffic"
+    repository: "changsiuuuu/traffic-service"
     tag: "latest"
 
 tourist:
   replicaCount: 1
   image:
-    repository: "changsiuuuu/jit-hub-tourist"
+    repository: "changsiuuuu/tourist-service"
     tag: "latest"
