@@ -6,7 +6,7 @@
 ingress:
   enabled: true
   className: "nginx"
-  host: "app.your-onprem-domain.com" # 실제 운영할 도메인으로 변경하세요
+  host: "leechs.shop"
 
 # 2. On-Prem 환경에서는 리소스를 절약하기 위해 최소 단위(Standby)로 실행
 gateway:
