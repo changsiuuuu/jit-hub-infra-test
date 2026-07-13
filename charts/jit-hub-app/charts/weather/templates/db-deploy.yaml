@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-db
+  template:
+    metadata:
+      labels:
+        app: weather-db
+    spec:
+      containers:
+      - name: postgres
+        image: "{{ .Values.db.image }}"
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.db.password }}"
+        ports:
+        - containerPort: 5432

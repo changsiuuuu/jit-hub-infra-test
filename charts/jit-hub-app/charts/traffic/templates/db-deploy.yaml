@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-db
+  template:
+    metadata:
+      labels:
+        app: traffic-db
+    spec:
+      containers:
+      - name: postgres
+        image: "{{ .Values.db.image }}"
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.db.password }}"
+        ports:
+        - containerPort: 5432

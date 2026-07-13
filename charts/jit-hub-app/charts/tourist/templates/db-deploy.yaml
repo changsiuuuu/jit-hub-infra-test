@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tourist-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tourist-db
+  template:
+    metadata:
+      labels:
+        app: tourist-db
+    spec:
+      containers:
+      - name: postgres
+        image: "{{ .Values.db.image }}"
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.db.password }}"
+        ports:
+        - containerPort: 5432

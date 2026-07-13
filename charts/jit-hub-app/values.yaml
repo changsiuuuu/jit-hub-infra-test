@@ -1,41 +1,55 @@
-ingress:
-  enabled: false
-  className: "nginx"
-  host: "app.local"
-
-gateway:
-  replicaCount: 1
-  image:
-    repository: "nginx"
-    tag: "alpine"
-  service:
-    type: ClusterIP
-    port: 8000
-
 auth:
+  db:
+    image: postgres:13
+    password: password
+  enabled: true
   image:
-    repository: "your-repo/auth-service"
-    tag: "latest"
+    repository: changsiuuuu/jit-hub-auth
+    tag: latest
+  replicaCount: 1
   service:
-    port: 8001
-
-weather:
+    port: 8000
+gateway:
+  enabled: true
   image:
-    repository: "your-repo/weather-service"
-    tag: "latest"
+    repository: changsiuuuu/jit-hub-gateway
+    tag: latest
+  replicaCount: 1
   service:
-    port: 8002
-
-traffic:
-  image:
-    repository: "your-repo/traffic-service"
-    tag: "latest"
-  service:
-    port: 8003
-
+    port: 80
+ingressRule:
+  host: leechs.shop
+  namespace: jit-hub
 tourist:
+  db:
+    image: postgres:13
+    password: password
+  enabled: true
   image:
-    repository: "your-repo/tourist-service"
-    tag: "latest"
+    repository: changsiuuuu/jit-hub-tourist
+    tag: latest
+  replicaCount: 1
   service:
-    port: 8004
+    port: 8000
+traffic:
+  db:
+    image: postgres:13
+    password: password
+  enabled: true
+  image:
+    repository: changsiuuuu/jit-hub-traffic
+    tag: latest
+  replicaCount: 1
+  service:
+    port: 8000
+weather:
+  db:
+    image: postgres:13
+    password: password
+  enabled: true
+  image:
+    repository: changsiuuuu/jit-hub-weather
+    tag: latest
+  replicaCount: 1
+  service:
+    port: 8000

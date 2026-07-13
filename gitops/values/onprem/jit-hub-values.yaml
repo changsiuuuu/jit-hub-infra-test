@@ -1,41 +1,36 @@
-# gitops/values/onprem/jit-hub-values.yaml
-# 온프레미스 환경을 위한 jit-hub-app values 덮어쓰기 설정
+# On-Prem 클러스터 전용 Override Values
+# Umbrella Chart (Subchart) 구조에 맞게 작성
 
-# 1. Ingress 활성화 및 온프레미스용 도메인 매핑
-# (테라폼으로 구성한 Cloudflare Tunnel -> Nginx Ingress Controller 트래픽 수신용)
-ingress:
-  enabled: true
-  className: "nginx"
+ingressRule:
+  namespace: "jit-hub"
   host: "leechs.shop"
 
-# 2. On-Prem 환경에서는 리소스를 절약하기 위해 최소 단위(Standby)로 실행
 gateway:
   replicaCount: 1
-  service:
-    port: 80
   image:
     repository: "changsiuuuu/jit-hub-gateway"
     tag: "latest"
 
-# 3. 실제 빌드된 이미지 리포지토리를 연동 (GitHub Actions에서 빌드한 주소)
 auth:
+  replicaCount: 1
   image:
-    repository: "changsiuuuu/auth-service"
+    repository: "changsiuuuu/jit-hub-auth"
     tag: "latest"
 
 weather:
+  replicaCount: 1
   image:
-    repository: "changsiuuuu/weather-service"
+    repository: "changsiuuuu/jit-hub-weather"
     tag: "latest"
 
 traffic:
+  replicaCount: 1
   image:
-    repository: "changsiuuuu/traffic-service"
+    repository: "changsiuuuu/jit-hub-traffic"
     tag: "latest"
 
 tourist:
+  replicaCount: 1
   image:
-    repository: "changsiuuuu/tourist-service"
+    repository: "changsiuuuu/jit-hub-tourist"
     tag: "latest"
-
-# 기존에 있던 DB_HOST 등의 단일 앱 구조 설정은 Helm 기반 마이크로서비스로 전환됨에 따라 제거되었습니다.
