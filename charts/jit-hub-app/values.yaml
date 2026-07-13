@@ -10,7 +10,7 @@ auth:
     tag: latest
   replicaCount: 1
   service:
-    port: 8000
+    port: 8001
 gateway:
   enabled: true
   image:
@@ -34,7 +34,7 @@ tourist:
     tag: latest
   replicaCount: 1
   service:
-    port: 8000
+    port: 8004
 traffic:
   db:
     image: postgres:15-alpine
@@ -47,7 +47,7 @@ traffic:
     tag: latest
   replicaCount: 1
   service:
-    port: 8000
+    port: 8003
 weather:
   db:
     image: postgres:15-alpine
@@ -60,4 +60,4 @@ weather:
     tag: latest
   replicaCount: 1
   service:
-    port: 8000
+    port: 8002

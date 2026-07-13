@@ -21,4 +21,4 @@ spec:
         - name: JITHUB_DATABASE_URL
           value: "postgresql://{{ .Values.db.user }}:{{ .Values.db.password }}@weather-db:5432/{{ .Values.db.name }}"
         - name: JITHUB_AUTH_SERVICE_URL
-          value: "http://auth-service:8000"
+          value: "http://auth-service:8001"
