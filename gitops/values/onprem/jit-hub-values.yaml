@@ -11,6 +11,8 @@ ingress:
 # 2. On-Prem 환경에서는 리소스를 절약하기 위해 최소 단위(Standby)로 실행
 gateway:
   replicaCount: 1
+  service:
+    port: 80
   image:
     repository: "changsiuuuu/jit-hub-gateway"
     tag: "latest"
