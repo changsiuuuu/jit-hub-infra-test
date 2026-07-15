@@ -1,15 +1,48 @@
 # gitops/values/eks-b/jit-hub-values.yaml
-jit-hub-app:
-  # 평시 Cold Standby이므로 replicaCount를 0으로 설정
-  # JIT 복구 시나리오(노드그룹 스케일업) 동작 후 파드가 스케줄링됨
-  replicaCount: 0 
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
-    requests:
-      cpu: 200m
-      memory: 256Mi
-  env:
-    ENVIRONMENT: eks-b
-    DB_HOST: "onprem-postgres-service-ip" # 온프레 메인 DB 연동
+# Umbrella Chart (Subchart) 구조에 맞게 작성된 EKS-A (Active) 환경 설정
+
+ingressRule:
+  namespace: "jit-hub"
+  host: "leechs.shop" # 필요시 eks-a 전용 도메인으로 변경 가능
+
+gateway:
+  replicaCount: 1
+  image:
+    repository: "changsiuuuu/jit-hub-gateway"
+    tag: "latest"
+
+auth:
+  replicaCount: 1
+  image:
+    repository: "changsiuuuu/auth-service"
+    tag: "latest"
+  db:
+    enabled: false
+    host: "auth-db.internal"
+
+weather:
+  replicaCount: 1
+  image:
+    repository: "changsiuuuu/weather-service"
+    tag: "latest"
+  db:
+    enabled: false
+    host: "weather-db.internal"
+
+traffic:
+  replicaCount: 1
+  image:
+    repository: "changsiuuuu/traffic-service"
+    tag: "latest"
+  db:
+    enabled: false
+    host: "traffic-db.internal"
+
+tourist:
+  replicaCount: 1
+  image:
+    repository: "changsiuuuu/tourist-service"
+    tag: "latest"
+  db:
+    enabled: false
+    host: "tourist-db.internal"

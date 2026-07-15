@@ -16,21 +16,41 @@ auth:
   image:
     repository: "changsiuuuu/auth-service"
     tag: "latest"
+  db:
+    enabled: true
+    serviceType: LoadBalancer
+    loadBalancerIP: "172.16.8.47"
+    host: "auth-db"
 
 weather:
   replicaCount: 1
   image:
     repository: "changsiuuuu/weather-service"
     tag: "latest"
+  db:
+    enabled: true
+    serviceType: LoadBalancer
+    loadBalancerIP: "172.16.8.48"
+    host: "weather-db"
 
 traffic:
   replicaCount: 1
   image:
     repository: "changsiuuuu/traffic-service"
     tag: "latest"
+  db:
+    enabled: true
+    serviceType: LoadBalancer
+    loadBalancerIP: "172.16.8.49"
+    host: "traffic-db"
 
 tourist:
   replicaCount: 1
   image:
     repository: "changsiuuuu/tourist-service"
     tag: "latest"
+  db:
+    enabled: true
+    serviceType: LoadBalancer
+    loadBalancerIP: "172.16.8.50"
+    host: "tourist-db"

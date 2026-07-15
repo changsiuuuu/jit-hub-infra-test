@@ -16,21 +16,33 @@ auth:
   image:
     repository: "changsiuuuu/auth-service"
     tag: "latest"
+  db:
+    enabled: false
+    host: "auth-db.internal"
 
 weather:
   replicaCount: 1
   image:
     repository: "changsiuuuu/weather-service"
     tag: "latest"
+  db:
+    enabled: false
+    host: "weather-db.internal"
 
 traffic:
   replicaCount: 1
   image:
     repository: "changsiuuuu/traffic-service"
     tag: "latest"
+  db:
+    enabled: false
+    host: "traffic-db.internal"
 
 tourist:
   replicaCount: 1
   image:
     repository: "changsiuuuu/tourist-service"
     tag: "latest"
+  db:
+    enabled: false
+    host: "tourist-db.internal"
