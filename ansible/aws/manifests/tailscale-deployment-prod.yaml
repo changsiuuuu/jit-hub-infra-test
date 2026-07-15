@@ -1,11 +1,10 @@
 # tailscale-deployment.yaml 파일
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: tailscale-router
   namespace: tailscale
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: tailscale
@@ -14,6 +13,8 @@ spec:
       labels:
         app: tailscale
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: tailscale-sa
       containers:
       - name: tailscale
@@ -24,27 +25,33 @@ spec:
             secretKeyRef:
               name: tailscale-auth
               key: TS_AUTHKEY
-
-        # - name: TS_ROUTES
-        #   value: "10.0.0.0/16,172.20.0.0/16"
-
-        # - name: TS_EXTRA_ARGS
-        #   value: "--advertise-routes=10.0.0.0/16,172.20.0.0/16"
-
         - name: TS_EXTRA_ARGS
-          value: "--advertise-tags=tag:prod-subnet-router --advertise-routes=10.0.0.0/16,172.20.0.0/16"
-          
+          value: "--advertise-tags=tag:prod-subnet-router --advertise-routes=10.0.0.0/16,172.20.0.0/16 --accept-routes"
         - name: TS_USERSPACE
           value: "false"
-        
         securityContext:
           capabilities:
             add:
             - NET_ADMIN
-        
         volumeMounts:
         - name: tun
           mountPath: /dev/net/tun
+
+      - name: routing-configurer
+        image: alpine:latest
+        securityContext:
+          privileged: true
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          apk add iproute2 iptables
+          # Wait for tailscale interface to come up
+          while ! ip link show tailscale0 > /dev/null 2>&1; do sleep 1; done
+          # Bypass AWS VPC CNI policy routing drops
+          ip rule add to 172.16.8.0/24 lookup 52 pref 100 || true
+          # Fix asymmetric routing by MASQUERADING traffic entering the tunnel
+          iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE || true
+          sleep infinity
       
       volumes:
       - name: tun
