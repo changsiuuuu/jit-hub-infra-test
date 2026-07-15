@@ -20,6 +20,12 @@ spec:
       - name: tailscale
         image: tailscale/tailscale:latest
         env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: TS_KUBE_SECRET
+          value: "tailscale-$(NODE_NAME)"
         - name: TS_AUTHKEY
           valueFrom:
             secretKeyRef:
