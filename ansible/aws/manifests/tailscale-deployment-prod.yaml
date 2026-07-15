@@ -32,7 +32,7 @@ spec:
               name: tailscale-auth
               key: TS_AUTHKEY
         - name: TS_EXTRA_ARGS
-          value: "--advertise-tags=tag:prod-subnet-router --advertise-routes=10.0.0.0/16,172.20.0.0/16 --accept-routes"
+          value: "--advertise-tags=tag:prod-subnet-router --accept-routes --reset --hostname=eks-router-$(NODE_NAME)"
         - name: TS_USERSPACE
           value: "false"
         securityContext:
