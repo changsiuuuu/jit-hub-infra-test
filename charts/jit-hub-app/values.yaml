@@ -4,6 +4,12 @@ auth:
     name: auth_db
     password: postgres
     user: postgres
+    persistence:
+      enabled: false
+      size: 100Mi
+      nfs:
+        server: "172.16.8.203"
+        path: "/nfs/shared/jithub-authdb"
   enabled: true
   image:
     repository: changsiuuuu/auth-service
@@ -28,6 +34,12 @@ tourist:
     name: tourist_db
     password: postgres
     user: postgres
+    persistence:
+      enabled: false
+      size: 100Mi
+      nfs:
+        server: "172.16.8.203"
+        path: "/nfs/shared/jithub-touristdb"
   enabled: true
   image:
     repository: changsiuuuu/tourist-service
@@ -41,6 +53,12 @@ traffic:
     name: traffic_db
     password: postgres
     user: postgres
+    persistence:
+      enabled: false
+      size: 100Mi
+      nfs:
+        server: "172.16.8.203"
+        path: "/nfs/shared/jithub-trafficdb"
   enabled: true
   image:
     repository: changsiuuuu/traffic-service
@@ -54,6 +72,12 @@ weather:
     name: weather_db
     password: postgres
     user: postgres
+    persistence:
+      enabled: false
+      size: 100Mi
+      nfs:
+        server: "172.16.8.203"
+        path: "/nfs/shared/jithub-weatherdb"
   enabled: true
   image:
     repository: changsiuuuu/weather-service
