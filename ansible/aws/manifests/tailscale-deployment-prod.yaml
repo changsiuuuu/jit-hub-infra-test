@@ -32,33 +32,52 @@ spec:
               name: tailscale-auth
               key: TS_AUTHKEY
         - name: TS_EXTRA_ARGS
-          value: "--advertise-tags=tag:prod-subnet-router --accept-routes --reset --hostname=eks-router-$(NODE_NAME)"
+          value: "--advertise-tags=tag:prod-subnet-router --accept-routes --hostname=eks-router-$(NODE_NAME)"
         - name: TS_USERSPACE
           value: "false"
         securityContext:
           capabilities:
             add:
             - NET_ADMIN
+            - NET_RAW
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                
+                # 최대 30초 대기 (무한 루프 방지: 0.5초 * 60회)
+                for i in $(seq 1 60); do
+                  ip link show tailscale0 >/dev/null 2>&1 && break
+                  sleep 0.5
+                done
+                
+                # AWS VPC CNI가 사용하는 라우팅 테이블 번호(52) 우회 룰 적용 (이미 있으면 스킵)
+                ip rule show | grep -q "172.16.8.0/24" || ip rule add to 172.16.8.0/24 lookup 52 pref 100
+                
+                # iptables 룰 중복 적용 방지 검증 후 삽입 (-C 로 검증)
+                iptables -t nat -C POSTROUTING -o tailscale0 -j MASQUERADE >/dev/null 2>&1 \
+                  || iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE
+                
+                echo "Routing configured successfully" > /tmp/routing-ready
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - |
+              # 라우팅 룰과 iptables 룰이 실제로 적용되었는지 둘 다 검증
+              ip rule show | grep -q "172.16.8.0/24" && \
+              iptables -t nat -C POSTROUTING -o tailscale0 -j MASQUERADE >/dev/null 2>&1
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
         volumeMounts:
         - name: tun
           mountPath: /dev/net/tun
-
-      - name: routing-configurer
-        image: alpine:latest
-        securityContext:
-          privileged: true
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          apk add iproute2 iptables
-          # Wait for tailscale interface to come up
-          while ! ip link show tailscale0 > /dev/null 2>&1; do sleep 1; done
-          # Bypass AWS VPC CNI policy routing drops
-          ip rule add to 172.16.8.0/24 lookup 52 pref 100 || true
-          # Fix asymmetric routing by MASQUERADING traffic entering the tunnel
-          iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE || true
-          sleep infinity
-      
       volumes:
       - name: tun
         hostPath:
