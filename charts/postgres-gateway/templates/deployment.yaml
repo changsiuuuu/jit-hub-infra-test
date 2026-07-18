@@ -56,6 +56,20 @@ spec:
               value: {{ .Values.tailscale.extraArgs | quote }}
             - name: TS_USERSPACE
               value: "false"
+          {{- if .Values.tailscale.onPremRoute }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    for i in $(seq 1 60); do
+                      ip link show tailscale0 >/dev/null 2>&1 && break
+                      sleep 0.5
+                    done
+                    ip route replace {{ .Values.tailscale.onPremRoute }} dev tailscale0
+          {{- end }}
           securityContext:
             capabilities:
               add:

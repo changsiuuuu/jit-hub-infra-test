@@ -42,6 +42,8 @@ tailscale:
     name: postgres-gateway-tailscale-auth
     key: TS_AUTHKEY
   stateSecret: postgres-gateway-tailscale-state
-  extraArgs: "--accept-routes --hostname=postgres-gateway"
+  extraArgs: "--netfilter-mode=off --hostname=postgres-gateway"
+  # --accept-routes 대신 이 대역만 Pod 내부 tailscale0으로 보냅니다.
+  onPremRoute: ""
 
 resources: {}
