@@ -9,5 +9,5 @@ tailscale:
   # PgBouncer와 같은 Pod network namespace를 공유하므로 kubelet/Service 트래픽을
   # 방해하지 않도록 Tailscale의 iptables 관리 기능을 비활성화한다.
   # 기존 subnet router가 광고한 10.0.0.0/16을 수락하면 Pod의 로컬 VPC 대역과 충돌한다.
-  extraArgs: "--netfilter-mode=off --hostname=postgres-gateway"
+  extraArgs: "--reset --netfilter-mode=off --hostname=postgres-gateway"
   onPremRoute: "172.16.8.0/24"
