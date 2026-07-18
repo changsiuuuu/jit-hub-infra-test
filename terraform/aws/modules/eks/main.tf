@@ -16,7 +16,13 @@ module "eks" {
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
-    vpc-cni    = {}
+    vpc-cni = {
+      configuration_values = jsonencode({
+        env = {
+          AWS_VPC_K8S_CNI_EXCLUDE_SNAT_CIDRS = "172.16.8.0/24,100.64.0.0/10"
+        }
+      })
+    }
   }
 
   node_security_group_additional_rules = merge(

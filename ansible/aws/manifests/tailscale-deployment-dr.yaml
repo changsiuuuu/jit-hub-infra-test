@@ -32,14 +32,9 @@ spec:
               name: tailscale-auth
               key: TS_AUTHKEY
         - name: TS_EXTRA_ARGS
-          value: "--advertise-tags=tag:dr-subnet-router --accept-routes --hostname=eks-router-$(NODE_NAME)"
+          value: "--advertise-tags=tag:dr-subnet-router --accept-routes --reset --hostname=eks-router-$(NODE_NAME)"
         - name: TS_USERSPACE
           value: "false"
-        securityContext:
-          capabilities:
-            add:
-            - NET_ADMIN
-            - NET_RAW
         lifecycle:
           postStart:
             exec:
@@ -47,8 +42,6 @@ spec:
               - /bin/sh
               - -c
               - |
-                set -e
-                
                 # 최대 30초 대기 (무한 루프 방지: 0.5초 * 60회)
                 for i in $(seq 1 60); do
                   ip link show tailscale0 >/dev/null 2>&1 && break
@@ -75,6 +68,11 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           failureThreshold: 3
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_RAW
         volumeMounts:
         - name: tun
           mountPath: /dev/net/tun
