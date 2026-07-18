@@ -42,8 +42,9 @@ tailscale:
     name: postgres-gateway-tailscale-auth
     key: TS_AUTHKEY
   stateSecret: postgres-gateway-tailscale-state
-  extraArgs: "--netfilter-mode=off --hostname=postgres-gateway"
-  # --accept-routes 대신 이 대역만 Pod 내부 tailscale0으로 보냅니다.
-  onPremRoute: ""
+  extraArgs: "--accept-routes --netfilter-mode=off --hostname=postgres-gateway"
+  # --accept-routes가 수락한 EKS 자체 subnet route가 Pod의 로컬 통신을
+  # 가로채지 않도록, 이 대역은 Pod의 main routing table을 먼저 조회합니다.
+  localCIDRs: []
 
 resources: {}

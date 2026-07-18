@@ -56,7 +56,7 @@ spec:
               value: {{ .Values.tailscale.extraArgs | quote }}
             - name: TS_USERSPACE
               value: "false"
-          {{- if .Values.tailscale.onPremRoute }}
+          {{- if .Values.tailscale.localCIDRs }}
           lifecycle:
             postStart:
               exec:
@@ -68,7 +68,9 @@ spec:
                       ip link show tailscale0 >/dev/null 2>&1 && break
                       sleep 0.5
                     done
-                    ip route replace {{ .Values.tailscale.onPremRoute }} dev tailscale0
+                    {{- range .Values.tailscale.localCIDRs }}
+                    ip rule show | grep -q "to {{ . }} lookup main" || ip rule add pref 100 to {{ . }} lookup main
+                    {{- end }}
           {{- end }}
           securityContext:
             capabilities:
