@@ -1,6 +1,11 @@
 enabled: false
 replicaCount: 1
 
+# 단일 replica가 하나의 Tailscale state Secret을 사용하므로, 테스트 중에는
+# 이전 Pod가 완전히 종료된 뒤 새 Pod를 만드는 Recreate 전략을 사용합니다.
+strategy:
+  type: Recreate
+
 # 비워 두면 Kubernetes scheduler가 모든 노드를 후보로 사용합니다.
 nodeSelector: {}
 
