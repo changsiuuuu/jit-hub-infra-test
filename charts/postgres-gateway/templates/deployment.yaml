@@ -14,6 +14,10 @@ spec:
         app.kubernetes.io/name: {{ include "postgres-gateway.name" . }}
     spec:
       serviceAccountName: {{ include "postgres-gateway.name" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: pgbouncer
           image: {{ .Values.pgbouncer.image }}

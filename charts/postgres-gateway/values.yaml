@@ -1,6 +1,9 @@
 enabled: false
 replicaCount: 1
 
+# 비워 두면 Kubernetes scheduler가 모든 노드를 후보로 사용합니다.
+nodeSelector: {}
+
 service:
   name: postgres-gateway
   port: 5432
