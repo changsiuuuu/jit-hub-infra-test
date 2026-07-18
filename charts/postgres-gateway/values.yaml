@@ -1,0 +1,39 @@
+enabled: false
+replicaCount: 1
+
+service:
+  name: postgres-gateway
+  port: 5432
+
+pgbouncer:
+  image: edoburu/pgbouncer:v1.25.2-p0
+  poolMode: session
+  maxClientConn: 100
+  defaultPoolSize: 20
+  users:
+    # 테스트용 계정입니다. 운영에서는 환경별 Secret으로 교체합니다.
+    - name: postgres
+      password: postgres
+  databases:
+    - name: auth_db
+      host: 172.16.8.47
+      port: 5432
+    - name: weather_db
+      host: 172.16.8.48
+      port: 5432
+    - name: traffic_db
+      host: 172.16.8.49
+      port: 5432
+    - name: tourist_db
+      host: 172.16.8.50
+      port: 5432
+
+tailscale:
+  image: tailscale/tailscale:latest
+  authKeySecret:
+    name: postgres-gateway-tailscale-auth
+    key: TS_AUTHKEY
+  stateSecret: postgres-gateway-tailscale-state
+  extraArgs: "--accept-routes --hostname=postgres-gateway"
+
+resources: {}
