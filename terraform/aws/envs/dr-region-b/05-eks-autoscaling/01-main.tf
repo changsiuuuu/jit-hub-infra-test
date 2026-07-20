@@ -32,7 +32,7 @@ module "karpenter_iam" {
   # Karpenter가 새로 만드는 EC2에 붙일 Role
   # ops-values.yaml의 karpenter.iamRole 값과 이름을 맞춤
   create_node_iam_role          = true
-  node_iam_role_name            = "KarpenterNodeRole-eks-a"
+  node_iam_role_name            = "KarpenterNodeRole-eks-b"
   node_iam_role_use_name_prefix = false # 뒤에 랜덤 문자열 안 붙임
 
   # SSM: 노드에 문제 생겼을 때 세션 매니저로 접속하기 위함
