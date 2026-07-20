@@ -11,11 +11,7 @@ kube-prometheus-stack:
         cluster: eks-a
       # 온프레미스 중앙 Prometheus로 메트릭 전송 (Cloudflare Tunnel 경유)
       remoteWrite:
-        - url: "https://prometheus-ingest.jit-hub-domain.com/api/v1/write"
-
-  # 중앙 Grafana에서 통합 모니터링하므로 비활성
-  grafana:
-    enabled: false
+        - url: "https://prometheus-ingest.unzipp.cloud/api/v1/write"
 
   alertmanager:
     enabled: false
@@ -28,6 +24,6 @@ promtail:
   config:
     clients:
       # 온프레미스 중앙 Loki로 로그 전송 (Cloudflare Tunnel 경유)
-      - url: "https://loki-ingest.jit-hub-domain.com/loki/api/v1/push"
+      - url: "https://loki-ingest.unzipp.cloud/loki/api/v1/push"
         external_labels:
           cluster: eks-a

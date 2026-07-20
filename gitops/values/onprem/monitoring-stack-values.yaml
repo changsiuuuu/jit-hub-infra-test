@@ -23,10 +23,22 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     adminPassword: "admin"  # 운영 시 Secret으로 교체 필요
+    sidecar:
+      datasources:
+        defaultDatasourceEnabled: false
     additionalDataSources:
-      - name: Loki
+      - name: "OnPrem"
+        type: prometheus
+        uid: prometheus
+        url: http://onprem-monitoring-stack-ku-prometheus.monitoring:9090/
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+          timeInterval: 30s
+      - name: "Loki"
         type: loki
-        url: http://monitoring-stack-loki:3100
+        uid: loki
+        url: http://onprem-monitoring-stack-loki:3100
         access: proxy
         isDefault: false
 
@@ -42,11 +54,27 @@ loki:
     replicas: 0
   write:
     replicas: 0
+  singleBinary:
+    persistence:
+      enabled: true
+      existingClaim: loki-pvc
+  nfs:
+    enabled: true
+    server: "192.168.0.0"        # NFS 서버 IP (실제 IP로 변경 필요)
+    path: "/data/jit-hub/loki"   # NFS 경로
+    storage: 50Gi
 
 promtail:
   enabled: true
   config:
     clients:
-      - url: http://monitoring-stack-loki:3100/loki/api/v1/push
+      - url: http://onprem-monitoring-stack-loki:3100/loki/api/v1/push
         external_labels:
           cluster: onprem
+
+# EKS 클러스터들의 remote_write/promtail을 받는 Ingress
+ingestIngress:
+  enabled: true
+  domain: unzipp.cloud
+  prometheusServiceName: onprem-monitoring-stack-ku-prometheus
+  lokiServiceName: onprem-monitoring-stack-loki

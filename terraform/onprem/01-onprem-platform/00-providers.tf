@@ -28,21 +28,21 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token 
 }
 
-provider "kubernetes" { 
+provider "kubernetes" {
   config_path = "~/.kube/config"
-  config_context = "kubernetes-admin@kubernetes"  
+  config_context = "kubernetes-admin@kubernetes"
 }
 
-provider "helm" { 
-  kubernetes { 
-    config_path = "~/.kube/config" 
-    config_context = "kubernetes-admin@kubernetes" 
-  } 
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+    config_context = "kubernetes-admin@kubernetes"
+  }
 }
 
-provider "kubectl" { 
-  config_path = "~/.kube/config" 
-  config_context = "kubernetes-admin@kubernetes" 
+provider "kubectl" {
+  config_path = "~/.kube/config"
+  config_context = "kubernetes-admin@kubernetes"
 }
 
 # --- Variables -----------------------------------------------------------------
@@ -63,6 +63,6 @@ variable "cloudflare_account_id" {
 }
 
 variable "domain_name" {
-  description = "연결할 외부 도메인 (leechs.shop)"
+  description = "연결할 외부 도메인 (unzipp.cloud)"
   type        = string
 }

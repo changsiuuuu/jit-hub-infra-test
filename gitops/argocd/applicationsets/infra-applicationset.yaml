@@ -22,8 +22,8 @@ spec:
               elements:
                 # - chart: cloudflared
                 #   namespace: kube-system
-                # - chart: monitoring-stack
-                #  namespace: monitoring
+                - chart: monitoring-stack
+                  namespace: monitoring
                 - chart: postgres-gateway
                   namespace: jit-hub
                 - chart: ops
@@ -51,3 +51,4 @@ spec:
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+          - ServerSideApply=true
