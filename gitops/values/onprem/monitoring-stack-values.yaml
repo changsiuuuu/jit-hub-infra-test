@@ -23,6 +23,9 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     adminPassword: "admin"  # 운영 시 Secret으로 교체 필요
+    service:
+      type: NodePort
+      nodePort: 30030
     sidecar:
       datasources:
         defaultDatasourceEnabled: false
