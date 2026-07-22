@@ -23,7 +23,7 @@ keda:
 
   # kube-prometheus-stack의 Prometheus 서비스 주소
   serverAddress: >-
-    http://eks-a-monitoring-stack-kube-prometheus.monitoring.svc.cluster.local:9090
+    http://eks-a-monitoring-stack-kub-prometheus.monitoring.svc.cluster.local:9090
 
 karpenter:
   enabled: true
