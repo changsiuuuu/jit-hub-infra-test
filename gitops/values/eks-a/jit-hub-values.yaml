@@ -4,13 +4,11 @@
 ingressRule:
   namespace: "jit-hub"
   host: "leechs.shop" # 필요시 eks-a 전용 도메인으로 변경 가능
-
 gateway:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/jit-hub-gateway"
-    tag: "v1"
-
+    tag: "6e79347ad3ae"
 auth:
   replicaCount: 1
   image:
@@ -19,7 +17,6 @@ auth:
   db:
     enabled: false
     host: "postgres-gateway"
-
 weather:
   replicaCount: 1
   image:
@@ -28,7 +25,6 @@ weather:
   db:
     enabled: false
     host: "postgres-gateway"
-
 traffic:
   replicaCount: 1
   image:
@@ -37,7 +33,6 @@ traffic:
   db:
     enabled: false
     host: "postgres-gateway"
-
 tourist:
   replicaCount: 1
   image:
