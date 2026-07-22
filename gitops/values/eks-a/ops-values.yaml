@@ -1,5 +1,5 @@
 # gitops/values/eks-a/ops-values.yaml
-environment: eks-a      # nodepool.yaml이 {{ .Values.environment }}로 참조
+environment: eks-a      # nodepool.yaml이 {{ .Values.environment }}로 참조#
 clusterName: eks-a
 
 keda:
