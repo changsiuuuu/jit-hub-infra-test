@@ -1,23 +1,32 @@
-
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
+
 metadata:
-  name: weather-service-scaler  
-  namespace: default
-  
+  name: weather-service-scaler
+  namespace: {{ .Values.keda.namespace | default "jit-hub" }}
+
 spec:
   scaleTargetRef:
-    name: weather-service   # jit-hub-app의 Deployment 이름과 일치하여 합니다.
+    # jit-hub-app의 Deployment 이름과 일치해야 합니다.
+    name: weather-service
     kind: Deployment
-  minReplicaCount: 1          # 최소 복제본
-  maxReplicaCount: 5          # 최대 복제본 
-  cooldownPeriod: 300         # 확장 후 냉각 기간 
+
+  minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 5 }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
+
   triggers:
-  - type: prometheus
-    metadata:
-      # kube-prometheus-stack 차트의 Prometheus 서비스명
-      serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090   
-      metricName: weather_request_rate
-      query: |                       
-        sum(rate(http_requests_total{job="weather-service"}[1m]))     
-      threshold: "10"   # 임계값(RPS)
+    - type: prometheus
+      metadata:
+        # kube-prometheus-stack의 Prometheus 서비스 주소
+        serverAddress: {{ .Values.keda.serverAddress | quote }}
+
+        # KEDA가 HPA에 노출할 외부 메트릭 이름
+        metricName: weather_request_rate
+
+        # weather-service의 최근 1분간 초당 요청 수
+        query: |
+          sum(rate(http_requests_total{job="weather-service"}[1m]))
+
+        # 스케일링 기준값(RPS)
+        threshold: {{ .Values.keda.threshold | default "10" | quote }}
