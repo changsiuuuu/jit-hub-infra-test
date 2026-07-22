@@ -5,6 +5,10 @@ kube-prometheus-stack:
   enabled: true
 
   prometheus:
+    service:
+      type: LoadBalancer
+      port: 9090
+      loadBalancerIP: 172.16.8.32
     prometheusSpec:
       externalLabels:
         cluster: onprem
@@ -26,6 +30,7 @@ kube-prometheus-stack:
     service:
       type: LoadBalancer
       port: 80
+      loadBalancerIP: 172.16.8.33
     sidecar:
       datasources:
         defaultDatasourceEnabled: false
@@ -51,6 +56,10 @@ kube-prometheus-stack:
 loki:
   enabled: true
   deploymentMode: SingleBinary
+  service:
+    type: LoadBalancer
+    port: 3100
+    loadBalancerIP: 172.16.8.34
   backend:
     replicas: 0
   read:
