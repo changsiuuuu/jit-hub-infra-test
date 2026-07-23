@@ -76,6 +76,7 @@ spec:
             - -c
             - |
               # 라우팅 룰과 iptables 룰이 실제로 적용되었는지 둘 다 검증
+              tailscale ip -4 | grep -q . && \
               ip rule show | grep -q "172.16.8.0/24" && \
               iptables -t nat -C POSTROUTING -o tailscale0 -j MASQUERADE >/dev/null 2>&1
           initialDelaySeconds: 5

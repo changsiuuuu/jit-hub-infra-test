@@ -1,7 +1,8 @@
 resource "null_resource" "install_tailscale" {
 
   triggers = {
-    cluster = var.cluster_name
+    cluster      = var.cluster_name
+    manifest_sha = filesha256("${path.module}/../../../../ansible/aws/manifests/tailscale-deployment-prod.yaml")
   }
 
   provisioner "local-exec" {
