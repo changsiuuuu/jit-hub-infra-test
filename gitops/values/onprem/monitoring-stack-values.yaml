@@ -56,6 +56,10 @@ kube-prometheus-stack:
 loki:
   enabled: true
   deploymentMode: SingleBinary
+  chunksCache:
+    enabled: false      # ★ 추가 — Pending 제거
+  resultsCache:
+    enabled: false      # ★ 추가  
   backend:
     replicas: 0
   read:
