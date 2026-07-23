@@ -67,15 +67,15 @@ loki:
     persistence:
       enabled: true
       existingClaim: loki-pvc
-    service:
-      type: LoadBalancer
-      port: 3100
-      loadBalancerIP: 172.16.8.34
   nfs:
     enabled: true
     server: "172.16.8.203"        # NFS 서버 IP (실제 IP로 변경 필요)
     path: "/nfs/shared/jithub-loki"   # NFS 경로
     storage: 50Gi
+
+lokiLoadBalancer:
+  enabled: true
+  ip: 172.16.8.34
 
 promtail:
   enabled: true
