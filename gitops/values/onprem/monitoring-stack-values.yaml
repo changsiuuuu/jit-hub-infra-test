@@ -56,10 +56,6 @@ kube-prometheus-stack:
 loki:
   enabled: true
   deploymentMode: SingleBinary
-  service:
-    type: LoadBalancer
-    port: 3100
-    loadBalancerIP: 172.16.8.34
   backend:
     replicas: 0
   read:
@@ -67,9 +63,14 @@ loki:
   write:
     replicas: 0
   singleBinary:
+    replicas: 1
     persistence:
       enabled: true
       existingClaim: loki-pvc
+    service:
+      type: LoadBalancer
+      port: 3100
+      loadBalancerIP: 172.16.8.34
   nfs:
     enabled: true
     server: "172.16.8.203"        # NFS 서버 IP (실제 IP로 변경 필요)
