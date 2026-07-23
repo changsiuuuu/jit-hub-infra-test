@@ -1,38 +1,25 @@
-{{- if .Values.keda.enabled }}
 
 apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-
+kind: ScaledObject 
 metadata:
-  name: tourist-service-scaler
+  name: tourist-service-scaler 
   namespace: {{ .Values.keda.namespace | default "jit-hub" }}
 
 spec:
   scaleTargetRef:
-    # jit-hub-app의 Deployment 이름과 정확히 일치해야 합니다.
-    name: tourist-service
+    name: tourist-service     # jit-hub-app의 Deployment 이름과 일치하여 합니다.
     kind: Deployment
-
   minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
   maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 5 }}
-
-  # 부하가 감소한 후 Pod를 축소하기까지 기다리는 시간(초)
   cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
 
   triggers:
-    - type: prometheus
-      metadata:
-        # kube-prometheus-stack의 Prometheus 서비스 주소
-        serverAddress: {{ required "keda.serverAddress 값이 필요합니다." .Values.keda.serverAddress | quote }}
-
-        # KEDA가 HPA에 제공할 외부 메트릭 이름
-        metricName: tourist_request_rate
-
-        # tourist-service의 최근 1분간 초당 요청 수(RPS)
-        query: |
-          sum(rate(http_requests_total{job="tourist-service"}[1m]))
-
-        # 스케일링 임계값
-        threshold: {{ .Values.keda.threshold | default "10" | quote }}
-
-{{- end }}
+  - type: prometheus
+    metadata:
+    # kube-prometheus-stack 차트의 Prometheus 서비스명
+      serverAddress: {{ .Values.keda.serverAddress }}
+      metricName: tourist_request_rate
+      # 전체 요청 수를 기록하는 메트릭에서 tourism--service 라는 앱의 1분 동안의 데이터만 가져오기
+      query: |                            
+        sum(rate(http_requests_total{job="tourist-service"}[1m]))    
+      threshold: {{ .Values.keda.threshold | default "10" | quote }}        # 임계값 

@@ -1,70 +1,51 @@
 # gitops/values/eks-a/ops-values.yaml
-
-# nodepool.yaml에서 {{ .Values.environment }}로 참조
-environment: eks-a
-
+environment: eks-a      # nodepool.yaml이 {{ .Values.environment }}로 참조
 clusterName: eks-a
 
 keda:
   enabled: true
-
-  # ScaledObject가 생성될 네임스페이스
-  # 대상 Deployment와 같은 네임스페이스여야 합니다.
-  namespace: jit-hub
-
+  namespace: jit-hub                                    # ★추가 - ScaledObject 생성 위치 (앱과 동일해야 함)
   minReplicaCount: 3
   maxReplicaCount: 10
-
-  # 부하가 감소한 후 축소하기까지 기다리는 시간(초)
-  cooldownPeriod: 300
-
-  # Prometheus 쿼리 결과가 이 값을 기준으로 스케일링됩니다.
-  threshold: "50"
-
-  # kube-prometheus-stack의 Prometheus 서비스 주소
-  serverAddress: >-
-    http://eks-a-monitoring-stack-kub-prometheus.monitoring.svc.cluster.local:9090
+  cooldownPeriod: 300                                   # ★추가 - 축소 대기 시간
+  threshold: '50'                                       # ★추가 - triggers 밖으로 꺼냄
+  # ★수정 - ArgoCD 배포 시 릴리스명이 붙어 클러스터마다 이름이 달라짐
+  serverAddress: http://eks-a-monitoring-stack-kub-prometheus.monitoring.svc.cluster.local:9090
 
 karpenter:
   enabled: true
-
-  namespace: karpenter
-
   nodePoolName: eks-a-nodepool
-  nodeClassName: eks-a-nodeclass
+  nodeClassName:
+    - eks-a-nodeclass
+  namespace: karpenter
 
   iamRole: KarpenterNodeRole-eks-a
 
-  # Karpenter가 생성할 수 있는 EC2 인스턴스 유형
-  instanceTypes:
-    - t3.small   # vCPU 2, Memory 2GiB
-    - t3.medium  # vCPU 2, Memory 4GiB
-    - t3.large   # vCPU 2, Memory 8GiB
+  instanceTypes:   # 인스턴스 type
+    - t3.small     # cpu 2, 2GB
+    - t3.medium    # cpu 2, 4GB
+    - t3.large     # cpu 2, 8GB
 
-  # EC2 구매 방식
-  capacityTypes:
+  capacityTypes:   # 인스턴스 유형
     - on-demand
 
-  # NodePool 전체 리소스 최대치
-  limits:
-    cpu: "100"
+  limits:           # 최대 cpu, memory 설정 값
+    cpu: "100"      # 최대치를 얼마로 설정할지
     memory: "100Gi"
 
-  # 노드 최적화 및 비용 절감 설정
+  # Node 최적화 (비용 절감)
   disruption:
-    # WhenEmpty: Pod가 없는 노드만 정리
-    # WhenEmptyOrUnderutilized: 비어 있거나 사용률이 낮은 노드 정리
+    # WhenEmpty        : Pod 없는 노드만 정리 (안전)
+    # WhenUnderutilized: 사용률 낮으면 Pod 몰아서 노드 줄임 (공격적)
     consolidationPolicy: WhenEmpty
-
-    # 노드가 빈 상태가 된 후 종료하기까지 기다리는 시간
+    # 빈 상태로 이만큼 지나면 종료
     consolidateAfter: 30s
-
-    # 노드 최대 수명
+    # 노드 최대 수명 (생성 후 이만큼 지나면 무조건 교체)
     expireAfter: 720h
 
   ebs:
-    volumeSize: 100Gi
-    volumeType: gp3
+    volumeSize: 100Gi            # 디스크 크기
+    volumeType: gp3              # EBS 타입
 
 customScheduler:
   enabled: true
