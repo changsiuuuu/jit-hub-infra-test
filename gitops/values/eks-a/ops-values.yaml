@@ -11,6 +11,10 @@ keda:
   threshold: '50'
   # ArgoCD 배포 시 릴리스명이 접두사로 붙어 클러스터마다 이름이 달라짐
   serverAddress: http://eks-a-monitoring-stack-kub-prometheus.monitoring.svc.cluster.local:9090
+  fallback:
+    failureThreshold: 3
+    replicas: 3
+
 
 karpenter:
   enabled: true

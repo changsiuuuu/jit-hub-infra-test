@@ -12,6 +12,10 @@ spec:
   minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
   maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 5 }}
   cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
+  # Prometheus 연결 실패 시 최소 가용성 유지
+  fallback:
+    failureThreshold: {{ .Values.keda.fallback.failureThreshold | default 3 }}
+    replicas: {{ .Values.keda.fallback.replicas | default 3 }}
 
   triggers:
   - type: prometheus
