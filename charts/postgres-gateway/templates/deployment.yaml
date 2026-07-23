@@ -15,6 +15,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "postgres-gateway.name" . }}
     spec:
+      serviceAccountName: default
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
