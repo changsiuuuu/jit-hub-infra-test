@@ -22,12 +22,12 @@ spec:
               elements:
                 # - chart: cloudflared
                 #   namespace: kube-system
-                - chart: monitoring-stack
-                  namespace: monitoring
+                #- chart: monitoring-stack
+                #  namespace: monitoring
                 - chart: postgres-gateway
                   namespace: jit-hub
-                - chart: ops
-                  namespace: kube-system
+                #- chart: ops
+                #  namespace: kube-system
   template:
     metadata:
       name: '{{name}}-{{chart}}'
