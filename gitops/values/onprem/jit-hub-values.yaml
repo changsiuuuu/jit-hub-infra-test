@@ -8,12 +8,12 @@ gateway:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/jit-hub-gateway"
-    tag: "79d959256720"
+    tag: "v1"
 auth:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/auth-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.47"
@@ -28,7 +28,7 @@ weather:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/weather-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.48"
@@ -43,7 +43,7 @@ traffic:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/traffic-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.49"
@@ -58,7 +58,7 @@ tourist:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/tourist-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.50"
