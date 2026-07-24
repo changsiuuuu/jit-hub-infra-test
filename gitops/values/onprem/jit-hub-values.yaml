@@ -3,16 +3,16 @@
 
 ingressRule:
   namespace: "jit-hub"
-  host: "ccmall.shop"
+  host: "leechs.shop"
 gateway:
   replicaCount: 1
   image:
-    repository: "harbor.ccmall.shop/jit-hub/jit-hub-gateway"
+    repository: "harbor.leechs.shop/jit-hub/jit-hub-gateway"
     tag: "79d959256720"
 auth:
   replicaCount: 1
   image:
-    repository: "harbor.ccmall.shop/jit-hub/auth-service"
+    repository: "harbor.leechs.shop/jit-hub/auth-service"
     tag: "seed"
   db:
     enabled: true
@@ -27,7 +27,7 @@ auth:
 weather:
   replicaCount: 1
   image:
-    repository: "harbor.ccmall.shop/jit-hub/weather-service"
+    repository: "harbor.leechs.shop/jit-hub/weather-service"
     tag: "seed"
   db:
     enabled: true
@@ -42,7 +42,7 @@ weather:
 traffic:
   replicaCount: 1
   image:
-    repository: "harbor.ccmall.shop/jit-hub/traffic-service"
+    repository: "harbor.leechs.shop/jit-hub/traffic-service"
     tag: "seed"
   db:
     enabled: true
@@ -57,7 +57,7 @@ traffic:
 tourist:
   replicaCount: 1
   image:
-    repository: "harbor.ccmall.shop/jit-hub/tourist-service"
+    repository: "harbor.leechs.shop/jit-hub/tourist-service"
     tag: "seed"
   db:
     enabled: true
