@@ -79,4 +79,4 @@ sllm:
     timeoutSeconds: "3"
   loki:
     mode: live
-    url: "http://onprem-monitoring-stack-loki:3100"
+    url: "http://onprem-monitoring-stack-loki.monitoring.svc.cluster.local:3100"
