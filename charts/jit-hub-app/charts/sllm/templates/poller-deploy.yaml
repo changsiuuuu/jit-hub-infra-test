@@ -27,3 +27,12 @@ spec:
           value: {{ .Values.loki.query | default "{cluster=~\".+\"}" | quote }}
         - name: ANALYZE_API_URL
           value: "http://sllm-service:{{ .Values.service.port }}/analyze"
+        {{- if .Values.notify.existingSecret }}
+        - name: LAMBDA_NOTIFY_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.notify.existingSecret | quote }}
+              key: {{ .Values.notify.urlKey | quote }}
+        - name: LAMBDA_NOTIFY_TIMEOUT_SECONDS
+          value: {{ .Values.notify.timeoutSeconds | quote }}
+        {{- end }}

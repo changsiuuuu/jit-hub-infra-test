@@ -8,12 +8,12 @@ gateway:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/jit-hub-gateway"
-    tag: "seed"
+    tag: "v1"
 auth:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/auth-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.47"
@@ -28,7 +28,7 @@ weather:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/weather-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.48"
@@ -43,7 +43,7 @@ traffic:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/traffic-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.49"
@@ -58,7 +58,7 @@ tourist:
   replicaCount: 1
   image:
     repository: "harbor.leechs.shop/jit-hub/tourist-service"
-    tag: "seed"
+    tag: "v1"
   db:
     enabled: true
     loadBalancerIP: "172.16.8.50"
@@ -73,6 +73,10 @@ tourist:
 sllm:
   enabled: true # 시연용: 온프레미스에서 Loki Poller 및 분석 파이프라인 활성화
   location: "onprem"
+  notify:
+    existingSecret: "sllm-notify"
+    urlKey: "LAMBDA_NOTIFY_URL"
+    timeoutSeconds: "3"
   loki:
     mode: live
     url: "http://onprem-monitoring-stack-loki:3100"

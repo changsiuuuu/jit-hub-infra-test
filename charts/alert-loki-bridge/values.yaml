@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: harbor.leechs.shop/jit-hub/alert-loki-bridge
-  tag: seed
+  tag: v1
   pullPolicy: IfNotPresent
 
 imagePullSecrets:

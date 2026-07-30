@@ -15,6 +15,9 @@ crash.log
 
 terraform.tfvars
 
+# Terraform Lambda local build artifacts
+terraform/aws/envs/personal-test/lambda_notify/build/
+
 tfplan
 *.tfplan
 
