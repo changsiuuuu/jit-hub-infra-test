@@ -22,6 +22,8 @@ spec:
           value: {{ .Values.location | default "EKS" | quote }}
         - name: OLLAMA_URL
           value: "http://ollama:11434/api/generate"
+        - name: OLLAMA_MODEL
+          value: {{ .Values.ollama.model | default "qwen2.5:1.5b" | quote }}
         - name: LOKI_MODE
           value: {{ .Values.loki.mode | default "mock" | quote }}
         - name: LOKI_URL

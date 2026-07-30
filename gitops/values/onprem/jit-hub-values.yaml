@@ -77,6 +77,8 @@ sllm:
     existingSecret: "sllm-notify"
     urlKey: "LAMBDA_NOTIFY_URL"
     timeoutSeconds: "3"
+  ollama:
+    model: "qwen2.5:1.5b"
   loki:
     mode: live
     url: "http://onprem-monitoring-stack-loki.monitoring.svc.cluster.local:3100"

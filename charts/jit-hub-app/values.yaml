@@ -104,6 +104,7 @@ sllm:
     query: '{cluster=~".+"}'
   ollama:
     image: ollama/ollama:0.31.2
+    model: qwen2.5:1.5b
     resources:
       requests:
         cpu: "500m"
