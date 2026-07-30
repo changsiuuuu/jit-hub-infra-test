@@ -71,7 +71,8 @@ tourist:
         path: "/nfs/shared/jithub-touristdb"
 
 sllm:
-  enabled: false # sLLM 분석 파이프라인은 onprem에서만 활성화 (7/15 팀 결정)
+  enabled: true # 시연용: 온프레미스에서 Loki Poller 및 분석 파이프라인 활성화
+  location: "onprem"
   loki:
     mode: live
     url: "http://onprem-monitoring-stack-loki:3100"

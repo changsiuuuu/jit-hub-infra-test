@@ -81,12 +81,10 @@ lokiLoadBalancer:
   enabled: true
   ip: 172.16.8.34
 
-# 큐레이션된 로그 전용 NFS 볼륨. jithub-log-curator DaemonSet이 대상 서비스
-# (auth/weather/traffic/tourist/gateway) 로그 중 filterPattern에 걸리는 줄만
-# 여기에 append하고, promtail은 이 파일 하나만 tail한다.
-# hostPath가 아니라 NFS라서 master/node1 어느 노드에서 로그가 나든 한 파일로 모인다.
+# 시연에서는 워커 노드의 /var/log/jithub/*.log에 장애 로그를 직접 주입하므로,
+# 중간 필터링용 jithub-log-curator DaemonSet과 NFS 볼륨을 사용하지 않는다.
 curatedLogs:
-  enabled: true
+  enabled: false
   nfs:
     server: "172.16.8.203"
     path: "/nfs/shared/jithub-curated"
@@ -105,22 +103,23 @@ promtail:
           cluster: onprem
     snippets:
       scrapeConfigs: |
-        - job_name: jithub-curated
+        - job_name: jithub-log-only
           static_configs:
             - targets:
                 - localhost
               labels:
-                job: jithub-curated
-                __path__: /var/log/jithub-curated/*.log
+                job: jithub-log-only
+                __path__: /var/log/jithub/*.log
 
   extraVolumes:
-    - name: jithub-curated
-      persistentVolumeClaim:
-        claimName: jithub-curated-pvc
+    - name: jithub-logs
+      hostPath:
+        path: /var/log/jithub
+        type: DirectoryOrCreate
 
   extraVolumeMounts:
-    - name: jithub-curated
-      mountPath: /var/log/jithub-curated
+    - name: jithub-logs
+      mountPath: /var/log/jithub
       readOnly: true
 
 # EKS 클러스터들의 remote_write/promtail을 받는 Ingress
